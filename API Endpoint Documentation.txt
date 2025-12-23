@@ -1,0 +1,745 @@
+# DistroZone API Documentation
+
+Base URL: `http://localhost:8000/api/v1`
+
+---
+
+## 🌐 Public Endpoints (Guest Access)
+
+### Authentication
+
+#### Register
+```
+POST /register
+
+Body:
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "phone": "081234567890",
+  "password": "password123",
+  "password_confirmation": "password123"
+}
+
+Response:
+{
+  "success": true,
+  "message": "Registration successful",
+  "data": {
+    "user": { ... },
+    "token": "..."
+  }
+}
+```
+
+#### Login
+```
+POST /login
+
+Body:
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+Response:
+{
+  "success": true,
+  "data": {
+    "user": { ... },
+    "token": "..."
+  }
+}
+```
+
+### Products
+
+#### Browse Products
+```
+GET /products?category=basic-tees&search=distro&min_price=100000&max_price=200000&sort_by=price&sort_order=asc&per_page=12&page=1
+
+Response:
+{
+  "success": true,
+  "data": [...],
+  "meta": {
+    "current_page": 1,
+    "last_page": 5,
+    "total": 50
+  }
+}
+```
+
+#### Product Details
+```
+GET /products/{slug}
+
+Response:
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Distro T-Shirt Model 1",
+    "price": 150000,
+    "variants": [...],
+    "images": [...]
+  }
+}
+```
+
+#### Get Product Variants
+```
+GET /products/{id}/variants
+
+Response:
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "color": "Black",
+      "size": "M",
+      "price": 150000,
+      "stock": 10
+    }
+  ]
+}
+```
+
+### Categories
+
+#### List Categories
+```
+GET /categories
+
+Response:
+{
+  "success": true,
+  "data": [...]
+}
+```
+
+### Shipping
+
+#### Get Available Destinations
+```
+GET /shipping/destinations
+
+Response:
+{
+  "success": true,
+  "data": {
+    "DKI Jakarta": ["Jakarta Pusat", "Jakarta Selatan", ...],
+    "West Java": ["Bandung", "Bogor", ...]
+  }
+}
+```
+
+#### Calculate Shipping Cost
+```
+POST /shipping/calculate
+
+Body:
+{
+  "city": "Jakarta Selatan",
+  "province": "DKI Jakarta",
+  "total_weight_grams": 900
+}
+
+Response:
+{
+  "success": true,
+  "data": {
+    "shipping_weight_kg": 1,
+    "rate_per_kg": 24000,
+    "shipping_cost": 24000
+  }
+}
+```
+
+---
+
+## 🔐 Customer Endpoints
+
+**Required:** `Authorization: Bearer {token}`
+
+### Profile
+
+#### Get Profile
+```
+GET /customer/profile
+```
+
+#### Update Profile
+```
+PUT /customer/profile
+
+Body:
+{
+  "name": "John Doe Updated",
+  "phone": "081234567890"
+}
+```
+
+### Addresses
+
+#### List Addresses
+```
+GET /customer/addresses
+```
+
+#### Create Address
+```
+POST /customer/addresses
+
+Body:
+{
+  "label": "Home",
+  "recipient_name": "John Doe",
+  "phone": "081234567890",
+  "address": "Jl. Sudirman No. 123",
+  "city": "Jakarta Selatan",
+  "province": "DKI Jakarta",
+  "postal_code": "12190",
+  "is_default": true
+}
+```
+
+#### Update Address
+```
+PUT /customer/addresses/{id}
+```
+
+#### Delete Address
+```
+DELETE /customer/addresses/{id}
+```
+
+#### Set Default Address
+```
+POST /customer/addresses/{id}/set-default
+```
+
+### Shopping Cart
+
+#### Get Cart
+```
+GET /customer/cart
+
+Response:
+{
+  "success": true,
+  "data": {
+    "items": [...],
+    "subtotal": 300000,
+    "total_items": 2
+  }
+}
+```
+
+#### Add to Cart
+```
+POST /customer/cart/add
+
+Body:
+{
+  "variant_id": 1,
+  "quantity": 2
+}
+```
+
+#### Update Quantity
+```
+PUT /customer/cart/items/{id}
+
+Body:
+{
+  "quantity": 3
+}
+```
+
+#### Remove Item
+```
+DELETE /customer/cart/items/{id}
+```
+
+#### Clear Cart
+```
+DELETE /customer/cart/clear
+```
+
+### Orders
+
+#### List Orders
+```
+GET /customer/orders?status=pending_verification&page=1
+
+Response:
+{
+  "success": true,
+  "data": [
+    {
+      "order_number": "DZ20241217ABC123",
+      "status": "pending_verification",
+      "total": 324000,
+      "created_at": "..."
+    }
+  ]
+}
+```
+
+#### Create Order
+```
+POST /customer/orders
+
+Body:
+{
+  "address_id": 1,
+  "customer_notes": "Please pack carefully"
+}
+
+Response:
+{
+  "success": true,
+  "data": {
+    "order_number": "DZ20241217ABC123",
+    "total": 324000,
+    "status": "pending_payment"
+  }
+}
+```
+
+#### Order Details
+```
+GET /customer/orders/{orderNumber}
+
+Response:
+{
+  "success": true,
+  "data": {
+    "order_number": "...",
+    "status": "...",
+    "items": [...],
+    "shipping": {...},
+    "payment": {...}
+  }
+}
+```
+
+#### Cancel Order
+```
+POST /customer/orders/{orderNumber}/cancel
+
+Note: Only allowed for orders in pending_payment or pending_verification status
+```
+
+### Payments
+
+#### Get Bank Accounts
+```
+GET /bank-accounts
+
+Response:
+{
+  "success": true,
+  "data": [
+    {
+      "bank_name": "Bank Mandiri",
+      "account_number": "1234567890",
+      "account_holder_name": "DistroZone"
+    }
+  ]
+}
+```
+
+#### Upload Payment Proof
+```
+POST /customer/orders/{orderNumber}/payment/upload
+
+Body (multipart/form-data):
+{
+  "proof_image": [file],
+  "sender_bank_name": "Bank BCA",
+  "sender_account_name": "John Doe",
+  "sender_account_number": "9876543210"
+}
+```
+
+#### Get Payment Details
+```
+GET /customer/orders/{orderNumber}/payment
+```
+
+---
+
+## 💼 Cashier Endpoints
+
+**Required:** `Authorization: Bearer {token}` + Role: cashier or admin
+
+### Dashboard
+
+#### Get Stats
+```
+GET /cashier/dashboard/stats
+
+Response:
+{
+  "success": true,
+  "data": {
+    "pending_verification": 5,
+    "verified_today": 12,
+    "total_revenue_today": 5400000
+  }
+}
+```
+
+### Orders
+
+#### List All Orders
+```
+GET /cashier/orders?status=pending_verification&page=1
+```
+
+#### Get Pending Orders
+```
+GET /cashier/orders/pending
+```
+
+#### Order Details
+```
+GET /cashier/orders/{orderNumber}
+```
+
+#### Update Order Status
+```
+PUT /cashier/orders/{orderNumber}/status
+
+Body:
+{
+  "status": "shipped"
+}
+```
+
+### Payment Verification
+
+#### List Pending Payments
+```
+GET /cashier/payments/pending
+
+Response:
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "order_number": "DZ20241217ABC123",
+      "customer_name": "John Doe",
+      "amount": 324000,
+      "proof_image": "...",
+      "uploaded_at": "..."
+    }
+  ]
+}
+```
+
+#### Verify Payment
+```
+POST /cashier/payments/{id}/verify
+
+Response:
+{
+  "success": true,
+  "message": "Payment verified successfully"
+}
+
+Actions performed:
+1. Deduct stock from inventory
+2. Mark payment as verified
+3. Update order status to 'processing'
+```
+
+#### Reject Payment
+```
+POST /cashier/payments/{id}/reject
+
+Body:
+{
+  "reason": "Transfer amount does not match order total"
+}
+```
+
+---
+
+## 👨‍💼 Admin Endpoints
+
+**Required:** `Authorization: Bearer {token}` + Role: admin
+
+### Dashboard
+
+#### Get Stats
+```
+GET /admin/dashboard/stats
+
+Response:
+{
+  "success": true,
+  "data": {
+    "total_orders": 1250,
+    "total_revenue": 45000000,
+    "total_profit": 18000000,
+    "pending_verification": 5,
+    "low_stock_products": 3
+  }
+}
+```
+
+### User Management
+
+#### List Users
+```
+GET /admin/users?role=customer&page=1
+```
+
+#### Create User
+```
+POST /admin/users
+
+Body:
+{
+  "name": "New Cashier",
+  "email": "cashier2@distrozone.com",
+  "password": "password",
+  "role": "cashier"
+}
+```
+
+#### Update User
+```
+PUT /admin/users/{id}
+```
+
+#### Delete User
+```
+DELETE /admin/users/{id}
+```
+
+#### Toggle Active Status
+```
+POST /admin/users/{id}/toggle-active
+```
+
+### Product Management
+
+#### List Products
+```
+GET /admin/products?category=basic-tees&page=1
+```
+
+#### Create Product
+```
+POST /admin/products
+
+Body:
+{
+  "category_id": 1,
+  "name": "New Distro T-Shirt",
+  "slug": "new-distro-tshirt",
+  "sku": "DZ-TS-0011",
+  "description": "...",
+  "base_price": 150000,
+  "cost_price": 75000,
+  "weight": 300
+}
+```
+
+#### Update Product
+```
+PUT /admin/products/{id}
+```
+
+#### Delete Product
+```
+DELETE /admin/products/{id}
+```
+
+#### Toggle Product Active
+```
+POST /admin/products/{id}/toggle-active
+```
+
+### Product Variants
+
+#### Add Variant
+```
+POST /admin/products/{id}/variants
+
+Body:
+{
+  "color": "Black",
+  "size": "M",
+  "price": 150000,
+  "stock": 20
+}
+```
+
+#### Update Variant
+```
+PUT /admin/products/{id}/variants/{variantId}
+```
+
+#### Delete Variant
+```
+DELETE /admin/products/{id}/variants/{variantId}
+```
+
+### Product Images
+
+#### Upload Image
+```
+POST /admin/products/{id}/images
+
+Body (multipart/form-data):
+{
+  "image": [file],
+  "alt_text": "Product front view",
+  "is_primary": true
+}
+```
+
+#### Delete Image
+```
+DELETE /admin/products/{id}/images/{imageId}
+```
+
+#### Set Primary Image
+```
+POST /admin/products/{id}/images/{imageId}/set-primary
+```
+
+### Reports
+
+#### Sales Report
+```
+GET /admin/reports/sales?start_date=2024-12-01&end_date=2024-12-31
+
+Response:
+{
+  "success": true,
+  "data": {
+    "total_orders": 125,
+    "total_revenue": 4500000,
+    "by_status": {...}
+  }
+}
+```
+
+#### Revenue Report
+```
+GET /admin/reports/revenue?period=monthly&year=2024
+```
+
+#### Profit Report
+```
+GET /admin/reports/profit?start_date=2024-12-01&end_date=2024-12-31
+
+Response:
+{
+  "success": true,
+  "data": {
+    "total_revenue": 4500000,
+    "total_cost": 2250000,
+    "total_profit": 2250000,
+    "profit_margin": 50
+  }
+}
+```
+
+#### Best Selling Products
+```
+GET /admin/reports/products/best-selling?limit=10
+
+Response:
+{
+  "success": true,
+  "data": [
+    {
+      "product_id": 1,
+      "product_name": "...",
+      "total_sold": 245,
+      "revenue": 3675000
+    }
+  ]
+}
+```
+
+#### Low Stock Report
+```
+GET /admin/reports/products/low-stock
+
+Response:
+{
+  "success": true,
+  "data": [
+    {
+      "product_name": "...",
+      "variant": "Black - M",
+      "current_stock": 3,
+      "min_stock": 5
+    }
+  ]
+}
+```
+
+#### Export Sales Report
+```
+GET /admin/reports/export/sales?start_date=2024-12-01&end_date=2024-12-31&format=csv
+
+Response: CSV file download
+```
+
+---
+
+## 📊 Order Status Lifecycle
+
+```
+pending_payment
+    ↓ (customer uploads payment proof)
+pending_verification
+    ↓ (cashier verifies)
+verified
+    ↓ (auto)
+processing
+    ↓ (admin/cashier marks as shipped)
+shipped
+    ↓ (admin/cashier confirms delivery)
+delivered
+```
+
+### Alternative Paths:
+- `pending_payment` → `cancelled` (by customer)
+- `pending_verification` → `cancelled` (by customer)
+- `pending_verification` → `rejected` (by cashier - invalid payment)
+
+---
+
+## 🔒 Authorization Rules
+
+| Endpoint Group | Guest | Customer | Cashier | Admin |
+|----------------|-------|----------|---------|-------|
+| Browse Products | ✅ | ✅ | ✅ | ✅ |
+| Cart | ❌ | ✅ | ❌ | ❌ |
+| Place Orders | ❌ | ✅ | ❌ | ❌ |
+| Verify Payments | ❌ | ❌ | ✅ | ✅ |
+| Manage Products | ❌ | ❌ | ❌ | ✅ |
+| View Reports | ❌ | ❌ | ❌ | ✅ |
+
+---
+
+## ⚠️ Important Notes
+
+1. **Operating Hours**: Orders can only be created between 10:00 - 17:00 WIB
+2. **Stock Deduction**: Stock is only deducted AFTER payment verification
+3. **Payment Method**: Bank transfer only (no cash, no QRIS)
+4. **Shipping**: Only destinations within Java island
+5. **Weight Calculation**: 1 kg = maximum 3 T-shirts
+6. **Authentication**: All protected endpoints require valid Bearer token

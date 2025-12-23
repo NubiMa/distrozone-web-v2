@@ -1,0 +1,23 @@
+Api test that doesn't work start from:
+
+*Calculate Shipping Cost*
+POST /shipping/calculate
+
+Body:
+{
+  "city": "Jakarta Selatan",
+  "province": "DKI Jakarta",
+  "total_weight_grams": 900
+}
+
+Response:
+{
+  "success": true,
+  "data": {
+    "shipping_weight_kg": 1,
+    "rate_per_kg": 24000,
+    "shipping_cost": 24000
+  }
+}
+
+Caused by there's no migration dattabase on there
