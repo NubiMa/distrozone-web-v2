@@ -1,5 +1,5 @@
-{{-- resources/views/guest/home.blade.php --}}
-@extends('layouts.guest')
+{{-- resources/views/customer/home.blade.php --}}
+@extends('layouts.customer')
 
 @section('title', 'DistroZone - Style Masa Depan, Harga Teman')
 

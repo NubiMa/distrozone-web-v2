@@ -17,6 +17,7 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         return view('auth.login');
+        // dd('MASUK LOGIN FORM');
     }
 
     /**
@@ -43,9 +44,9 @@ class LoginController extends Controller
                     return redirect()->route('cashier.dashboard');
                 case 'customer':
                     // Redirect back to previous page or home
-                    return redirect()->intended(route('home'));
+                    return redirect()->intended(route('customer.home'));
                 default:
-                    return redirect()->route('home');
+                    return redirect()->route('guest.home');
             }
         }
 
