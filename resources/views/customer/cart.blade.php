@@ -4,15 +4,18 @@
 @section('title', 'Keranjang Belanja - DistroZone')
 
 @section('content')
+{{-- @php
+        dd( $cart);
+@endphp --}}
 <div class="px-6 py-8">
-    
+
     {{-- Page Header --}}
     <div class="bg-gradient-to-r from-blue-400 to-cyan-400 border-4 border-black rounded-2xl p-8 mb-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <h1 class="text-5xl font-black italic mb-2">KERANJANG KAMU</h1>
         <p class="text-lg">Ready to look cool today?</p>
     </div>
 
-    @if($cartItems->isEmpty())
+    @if(collect($cart['items'])->isEmpty())
         {{-- Empty Cart --}}
         <div class="bg-white border-4 border-black rounded-2xl p-16 text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <div class="w-32 h-32 bg-gray-100 border-3 border-black rounded-full flex items-center justify-center mx-auto mb-6">
@@ -31,7 +34,7 @@
         </div>
     @else
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
+
             {{-- Cart Items --}}
             <div class="lg:col-span-2 space-y-4">
                 @foreach($cartItems as $item)
@@ -39,8 +42,8 @@
                     <div class="flex items-start gap-6">
                         {{-- Product Image --}}
                         <div class="w-24 h-24 bg-gray-100 border-3 border-black rounded-xl overflow-hidden flex-shrink-0">
-                            <img 
-                                src="{{ $item->productVariant->product->primaryImage?->image_path ? asset('storage/' . $item->productVariant->product->primaryImage->image_path) : asset('images/placeholder.png') }}" 
+                            <img
+                                src="{{ $item->productVariant->product->primaryImage?->image_path ? asset('storage/' . $item->productVariant->product->primaryImage->image_path) : asset('images/placeholder.png') }}"
                                 alt="{{ $item->productVariant->product->name }}"
                                 class="w-full h-full object-cover"
                             >
@@ -56,7 +59,7 @@
                             {{-- Quantity Controls --}}
                             <div class="flex items-center gap-3">
                                 <div class="flex items-center border-3 border-black rounded-full overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                    <button 
+                                    <button
                                         onclick="updateQuantity({{ $item->id }}, {{ $item->quantity - 1 }})"
                                         class="w-10 h-10 flex items-center justify-center bg-white hover:bg-gray-50 transition font-bold"
                                     >
@@ -65,7 +68,7 @@
                                     <span class="w-12 h-10 flex items-center justify-center font-bold bg-gray-50">
                                         {{ $item->quantity }}
                                     </span>
-                                    <button 
+                                    <button
                                         onclick="updateQuantity({{ $item->id }}, {{ $item->quantity + 1 }})"
                                         class="w-10 h-10 flex items-center justify-center bg-white hover:bg-gray-50 transition font-bold"
                                     >
@@ -84,8 +87,8 @@
                             <p class="text-2xl font-black text-pink-600 mb-4">
                                 IDR {{ number_format($item->price * $item->quantity, 0, ',', '.') }}
                             </p>
-                            
-                            <button 
+
+                            <button
                                 onclick="removeItem({{ $item->id }})"
                                 class="w-10 h-10 border-3 border-black rounded-full flex items-center justify-center hover:bg-pink-50 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                             >
@@ -99,7 +102,7 @@
                 @endforeach
 
                 {{-- Free Shipping Promo --}}
-                @if($subtotal < 500000)
+                {{-- @if($subtotal < 500000)
                 <div class="bg-gradient-to-r from-blue-100 to-cyan-100 border-4 border-black rounded-2xl p-6 flex items-center gap-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                     <div class="w-12 h-12 bg-blue-400 border-3 border-black rounded-full flex items-center justify-center flex-shrink-0">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,12 +111,12 @@
                     </div>
                     <div class="flex-1">
                         <p class="text-sm font-bold">
-                            Gratis ongkir untuk pembelian di atas IDR 500.000. Tambah 
+                            Gratis ongkir untuk pembelian di atas IDR 500.000. Tambah
                             <span class="text-pink-600">IDR {{ number_format(500000 - $subtotal, 0, ',', '.') }}</span> lagi!
                         </p>
                     </div>
                 </div>
-                @endif
+                @endif --}}
             </div>
 
             {{-- Order Summary --}}
@@ -131,17 +134,17 @@
                             <span class="text-sm">Total Harga ({{ $cartItems->sum('quantity') }} Barang)</span>
                             <span class="font-bold">IDR {{ number_format($subtotal, 0, ',', '.') }}</span>
                         </div>
-                        
+
                         <div class="flex items-center justify-between text-green-600">
                             <span class="text-sm">Diskon Barang</span>
                             <span class="font-bold">-IDR 0</span>
                         </div>
-                        
+
                         <div class="flex items-center justify-between">
                             <span class="text-sm">Ongkos Kirim</span>
                             <span class="font-bold">IDR {{ number_format($shipping, 0, ',', '.') }}</span>
                         </div>
-                        
+
                         <div class="flex items-center justify-between">
                             <span class="text-sm">Biaya Layanan</span>
                             <span class="font-bold">IDR {{ number_format($serviceFee, 0, ',', '.') }}</span>
@@ -149,11 +152,11 @@
                     </div>
 
                     {{-- Voucher Input --}}
-                    <div class="mb-6">
+                    {{-- <div class="mb-6">
                         <p class="text-xs font-bold mb-2 uppercase">Punya Kode Voucher?</p>
                         <div class="flex gap-2">
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 placeholder="KODEPROMO"
                                 class="flex-1 px-4 py-2 border-3 border-black rounded-xl font-medium uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-600"
                             >
@@ -161,7 +164,7 @@
                                 Pakai
                             </button>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="border-t-3 border-black pt-4 mb-6">
                         <div class="flex items-center justify-between">
@@ -203,7 +206,7 @@ function updateQuantity(itemId, newQuantity) {
         }
         return;
     }
-    
+
     fetch(`/customer/cart/items/${itemId}`, {
         method: 'PUT',
         headers: {

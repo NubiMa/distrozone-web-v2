@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="px-6 py-8">
-    
+
     {{-- Page Header --}}
     <div class="mb-8">
         <h1 class="text-4xl font-black mb-2">KATALOG PRODUK</h1>
@@ -14,11 +14,11 @@
 
     {{-- Filters & Products Grid --}}
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        
+
         {{-- Sidebar Filter --}}
         <div class="lg:col-span-1">
             <div class="bg-white border-4 border-black rounded-2xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sticky top-6">
-                
+
                 {{-- Filter Header --}}
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-black flex items-center gap-2">
@@ -27,20 +27,22 @@
                         </svg>
                         Filter
                     </h3>
-                    <button class="text-sm font-bold text-pink-600 hover:underline">RESET</button>
+                    <button class="text-sm font-bold text-pink-600 hover:underline">
+                        <a href="{{ route('customer.catalog') }}">Reset</a>
+                    </button>
                 </div>
 
-                <form action="{{ route('catalog') }}" method="GET" class="space-y-6">
-                    
+                <form action="{{ route('customer.catalog') }}" method="GET" class="space-y-6">
+
                     {{-- Price Range --}}
                     <div>
                         <h4 class="text-sm font-bold mb-3 uppercase">Rentang Harga</h4>
                         <div class="space-y-2">
-                            <input 
-                                type="range" 
-                                name="max_price" 
-                                min="50000" 
-                                max="500000" 
+                            <input
+                                type="range"
+                                name="max_price"
+                                min="50000"
+                                max="500000"
                                 step="10000"
                                 value="{{ request('max_price', 500000) }}"
                                 class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-600"
@@ -58,9 +60,9 @@
                         <div class="space-y-3">
                             @foreach($categories as $category)
                             <label class="flex items-center gap-3 cursor-pointer group">
-                                <input 
-                                    type="radio" 
-                                    name="category" 
+                                <input
+                                    type="radio"
+                                    name="category"
                                     value="{{ $category->slug }}"
                                     {{ request('category') == $category->slug ? 'checked' : '' }}
                                     class="w-5 h-5 border-2 border-black rounded-full text-pink-600 focus:ring-pink-600 cursor-pointer"
@@ -98,20 +100,20 @@
 
         {{-- Products Grid --}}
         <div class="lg:col-span-3">
-            
+
             {{-- Toolbar --}}
             <div class="flex items-center justify-between mb-6 bg-white border-3 border-black rounded-xl p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
                 <div class="flex items-center gap-4">
                     <span class="text-sm font-bold">
                         Menampilkan <span class="text-pink-600">{{ $products->count() }}</span> produk
                     </span>
-                    
+
                     {{-- Quick Filters --}}
                     <div class="flex items-center gap-2">
-                        <a href="{{ route('catalog', ['filter' => 'new']) }}" class="px-3 py-1 bg-blue-400 text-white text-xs font-bold border-2 border-black rounded-full hover:bg-blue-500 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                        <a href="{{ route('customer.catalog', ['filter' => 'new']) }}" class="px-3 py-1 bg-blue-400 text-white text-xs font-bold border-2 border-black rounded-full hover:bg-blue-500 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                             NEW DROP
                         </a>
-                        <a href="{{ route('catalog', ['filter' => 'sale']) }}" class="px-3 py-1 bg-pink-600 text-white text-xs font-bold border-2 border-black rounded-full hover:bg-pink-700 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                        <a href="{{ route('customer.catalog', ['filter' => 'sale']) }}" class="px-3 py-1 bg-pink-600 text-white text-xs font-bold border-2 border-black rounded-full hover:bg-pink-700 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                             SALE
                         </a>
                     </div>
@@ -119,9 +121,9 @@
 
                 {{-- Sort Dropdown --}}
                 <div class="relative">
-                    <select 
-                        name="sort" 
-                        onchange="window.location.href='{{ route('catalog') }}?sort='+this.value"
+                    <select
+                        name="sort"
+                        onchange="window.location.href='{{ route('customer.catalog') }}?sort='+this.value"
                         class="px-4 py-2 border-3 border-black rounded-lg font-bold text-sm appearance-none pr-10 cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:ring-2 focus:ring-pink-600"
                     >
                         <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
@@ -150,7 +152,7 @@
                         </div>
                         <h3 class="text-xl font-bold mb-2">Produk Tidak Ditemukan</h3>
                         <p class="text-gray-600 mb-4">Coba ubah filter atau kata kunci pencarian</p>
-                        <a href="{{ route('catalog') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-pink-600 text-white font-bold border-3 border-black rounded-xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all">
+                        <a href="{{ route('customer.catalog') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-pink-600 text-white font-bold border-3 border-black rounded-xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all">
                             Reset Filter
                         </a>
                     </div>

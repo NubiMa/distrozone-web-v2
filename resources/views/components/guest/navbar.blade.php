@@ -16,7 +16,7 @@
             <a href="{{ route('home') }}" class="text-base font-medium hover:text-pink-600 transition">
                 Beranda
             </a>
-            <a href="{{ route('catalog') }}" class="text-base font-medium hover:text-pink-600 transition">
+            <a href="{{ route('guest.catalog') }}" class="text-base font-medium hover:text-pink-600 transition">
                 Katalog
             </a>
             <a href="{{ route('about') }}" class="text-base font-medium hover:text-pink-600 transition">
@@ -26,7 +26,7 @@
 
         {{-- Auth Buttons --}}
         <div class="flex items-center gap-3">
-            <a href="{{ route('login') }}" class="px-6 py-2 border-3 border-black rounded-full font-medium hover:bg-gray-50 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+            <a href="{{ route('login') }}" class="px-6 py-2 border-3 bg-[#00f0ff] border-black rounded-full font-medium hover:bg-gray-50 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                 Masuk
             </a>
             <a href="{{ route('register') }}" class="px-6 py-2 bg-pink-600 text-white border-3 border-black rounded-full font-medium hover:bg-pink-700 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
@@ -34,4 +34,4 @@
             </a>
         </div>
     </div>
-</nav>  
+</nav>

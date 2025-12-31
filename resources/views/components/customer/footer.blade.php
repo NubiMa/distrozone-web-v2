@@ -21,9 +21,9 @@
             <div>
                 <h3 class="text-sm font-bold mb-4 uppercase">Belanja</h3>
                 <ul class="space-y-2">
-                    <li><a href="{{ route('guest.catalog') }}" class="text-sm text-gray-600 hover:text-pink-600">Semua Produk</a></li>
-                    <li><a href="{{ route('guest.catalog', ['filter' => 'new']) }}" class="text-sm text-gray-600 hover:text-pink-600">New Arrivals</a></li>
-                    <li><a href="{{ route('guest.catalog', ['filter' => 'best']) }}" class="text-sm text-gray-600 hover:text-pink-600">Best Sellers</a></li>
+                    <li><a href="{{ route('customer.home') }}" class="text-sm text-gray-600 hover:text-pink-600">Semua Produk</a></li>
+                    <li><a href="{{ route('customer.catalog', ['filter' => 'new']) }}" class="text-sm text-gray-600 hover:text-pink-600">New Arrivals</a></li>
+                    <li><a href="{{ route('customer.catalog', ['filter' => 'best']) }}" class="text-sm text-gray-600 hover:text-pink-600">Best Sellers</a></li>
                 </ul>
             </div>
 

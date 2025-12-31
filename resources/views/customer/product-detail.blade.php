@@ -5,12 +5,12 @@
 
 @section('content')
 <div class="px-6 py-8">
-    
+
     {{-- Breadcrumb --}}
     <nav class="flex items-center gap-2 text-sm mb-6">
-        <a href="{{ route('home') }}" class="text-gray-600 hover:text-pink-600">Katalog</a>
+        <a href="{{ route('customer.home') }}" class="text-gray-600 hover:text-pink-600">Katalog</a>
         <span class="text-gray-400">›</span>
-        <a href="{{ route('catalog', ['category' => $product->category->slug]) }}" class="text-gray-600 hover:text-pink-600">
+        <a href="{{ route('customer.catalog', ['category' => $product->category->slug]) }}" class="text-gray-600 hover:text-pink-600">
             {{ $product->category->name }}
         </a>
         <span class="text-gray-400">›</span>
@@ -19,30 +19,30 @@
 
     {{-- Product Container --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-        
+
         {{-- Product Images --}}
         <div>
             <div class="bg-white border-4 border-black rounded-2xl overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] mb-4">
-                {{-- Badges --}}
+
+                {{-- Main Image --}}
+                <div class="relative aspect-square bg-gray-100">
+                    {{-- Badges --}}
                 <div class="absolute top-4 left-4 flex flex-col gap-2 z-10">
                     @if($product->is_featured)
                     <span class="px-3 py-1 bg-pink-600 text-white text-xs font-bold border-2 border-white rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                         BEST SELLER
                     </span>
                     @endif
-                    
+
                     @if($product->created_at->isToday() || $product->created_at->isYesterday())
                     <span class="px-3 py-1 bg-blue-400 text-white text-xs font-bold border-2 border-white rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                         NEW DROP
                     </span>
                     @endif
                 </div>
-
-                {{-- Main Image --}}
-                <div class="relative aspect-square bg-gray-100">
-                    <img 
+                    <img
                         id="mainImage"
-                        src="{{ $product->primaryImage?->image_path ? asset('storage/' . $product->primaryImage->image_path) : asset('images/placeholder.png') }}" 
+                        src="{{ $product->primaryImage?->image_path ? asset('storage/' . $product->primaryImage->image_path) : asset('images/placeholder.png') }}"
                         alt="{{ $product->name }}"
                         class="w-full h-full object-cover"
                     >
@@ -53,12 +53,12 @@
             @if($product->images->count() > 1)
             <div class="grid grid-cols-4 gap-3">
                 @foreach($product->images as $image)
-                <button 
+                <button
                     onclick="changeImage('{{ asset('storage/' . $image->image_path) }}')"
                     class="aspect-square bg-white border-3 border-black rounded-xl overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all"
                 >
-                    <img 
-                        src="{{ asset('storage/' . $image->image_path) }}" 
+                    <img
+                        src="{{ asset('storage/' . $image->image_path) }}"
                         alt="{{ $image->alt_text }}"
                         class="w-full h-full object-cover"
                     >
@@ -71,7 +71,7 @@
         {{-- Product Info --}}
         <div>
             <h1 class="text-4xl font-black mb-2">{{ $product->name }}</h1>
-            
+
             <div class="flex items-center gap-3 mb-6">
                 <span class="text-3xl font-black text-pink-600">
                     Rp {{ number_format($product->base_price, 0, ',', '.') }}
@@ -87,7 +87,9 @@
             @if($product->getTotalStock() > 50)
             <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-100 border-3 border-black rounded-xl mb-6 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                 <div class="w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
-                <span class="text-sm font-bold text-green-800">Stok Tersedia: 50+</span>
+                <span class="text-sm font-bold text-green-800">
+                    Stok Tersedia : {{ $product->getTotalStock() }}
+                </span>
             </div>
             @else
             <div class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 border-3 border-black rounded-xl mb-6 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
@@ -102,17 +104,17 @@
                     <h3 class="text-sm font-bold uppercase">Pilih Ukuran</h3>
                     <button class="text-sm font-bold text-pink-600 hover:underline">Panduan Ukuran</button>
                 </div>
-                
+
                 <div class="grid grid-cols-5 gap-3">
                     @foreach(['S', 'M', 'L', 'XL', 'XXL'] as $size)
                     @php
                         $available = $product->variants->where('size', $size)->where('is_available', true)->sum('stock') > 0;
                     @endphp
                     <label class="cursor-pointer {{ !$available ? 'opacity-50 cursor-not-allowed' : '' }}">
-                        <input 
-                            type="radio" 
-                            name="size" 
-                            value="{{ $size }}" 
+                        <input
+                            type="radio"
+                            name="size"
+                            value="{{ $size }}"
                             class="peer hidden"
                             {{ !$available ? 'disabled' : '' }}
                         >
@@ -124,7 +126,7 @@
                 </div>
             </div>
 
-            <!-- {{-- Guest Login Prompt --}}
+            {{-- Add to Cart Button & Wishlist --}}
             <div class="bg-gradient-to-r from-pink-500 to-pink-600 border-4 border-black rounded-2xl p-6 mb-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                 <div class="flex items-center gap-4">
                     <div class="w-16 h-16 bg-white border-3 border-black rounded-full flex items-center justify-center">
@@ -133,20 +135,37 @@
                         </svg>
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-white font-black text-lg mb-1">INGIN MEMBELI PRODUK INI?</h3>
-                        <p class="text-white text-sm">Bergabunglah dengan komunitas DistroZone untuk belanja, simpan wishlist, dan dapatkan promo eksklusif!</p>
+                        <p class="text-white font-bold">100% Pembayaran Aman</p>
+                        <p class="text-sm text-white">Dengan metode pembayaran terpercaya</p>
                     </div>
                 </div>
-                
                 <div class="flex gap-3 mt-4">
-                    <a href="{{ route('login') }}" class="flex-1 px-6 py-3 bg-white text-black text-center font-bold border-3 border-black rounded-xl hover:bg-gray-50 transition shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
-                        Login
-                    </a>
-                    <a href="{{ route('register') }}" class="flex-1 px-6 py-3 bg-black text-white text-center font-bold border-3 border-white rounded-xl hover:bg-gray-800 transition shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]">
-                        Daftar Sekarang
-                    </a>
+                    <form action="{{ route('customer.cart.add') }}" method="POST" class="flex-1">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <input type="hidden" name="size" id="selectedSize">
+
+                        <button
+                            type="submit"
+                            id="addToCartBtn"
+                            class="w-full px-6 py-3 bg-white text-pink-600 font-bold border-3 border-black rounded-xl hover:bg-gray-100 transition shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled
+                        >
+                            TAMBAH KE KERANJANG
+                        </button>
+                    </form>
+
+                    <form action="{{ route('customer.wishlist.toggle', $product->id) }}" method="POST" class="flex-1">
+                        @csrf
+                        <button
+                            type="submit"
+                            class="w-full px-6 py-3 bg-black text-white font-bold border-3 border-white rounded-xl hover:bg-gray-800 transition shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]"
+                        >
+                            SIMPAN DI WISHLIST
+                        </button>
+                    </form>
                 </div>
-            </div> -->
+            </div>
 
             {{-- Product Description --}}
             <div class="bg-white border-4 border-black rounded-2xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
@@ -154,7 +173,7 @@
                 <div class="text-gray-700 leading-relaxed mb-4">
                     {{ $product->description }}
                 </div>
-                
+
                 <ul class="space-y-2">
                     <li class="flex items-start gap-2">
                         <span class="text-pink-600 font-bold">•</span>
@@ -172,7 +191,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 @push('scripts')

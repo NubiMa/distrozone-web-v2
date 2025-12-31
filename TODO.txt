@@ -1,3 +1,6 @@
 - Fixing Card-Product for customer
 - Fixing Product Detail dor customer
 - Wishlist, Cart, Profile Page
+
+- Add all controller left from claude
+- Add all of the customer page

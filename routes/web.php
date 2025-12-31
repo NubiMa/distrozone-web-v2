@@ -6,6 +6,7 @@ use App\Http\Controllers\Guest\CatalogController;
 use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\CustomerHomeController;
 use App\Http\Controllers\Customer\CustomerProductController;
 use App\Http\Controllers\Customer\CustomerCatalogController;
@@ -27,7 +28,7 @@ use App\Http\Controllers\Customer\AddressController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Product Catalog
-Route::get('/katalog', [CatalogController::class, 'index'])->name('catalog');
+Route::get('/katalog', [CatalogController::class, 'index'])->name('guest.catalog');
 Route::get('/produk/{slug}', [ProductController::class, 'show'])->name('product.show');
 
 // About Page
@@ -45,7 +46,7 @@ Route::middleware('guest')->group(function () {
     // Login
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
-    
+
     // Register
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register'])->name('register.post');
@@ -69,34 +70,39 @@ Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer
         return view('customer.about');
     })->name('about');
     Route::get('/produk/{slug}', [CustomerProductController::class, 'show'])->name('product.show');
-    
+
     // Cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
     Route::put('/cart/items/{id}', [CartController::class, 'updateQuantity'])->name('cart.update');
     Route::delete('/cart/items/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
-    
+
     // Checkout
-    // Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
-    // Route::post('/checkout', [CheckoutController::class, 'placeOrder'])->name('checkout.process');
-    
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout', [CheckoutController::class, 'placeOrder'])->name('checkout.process');
+
+     // Unggah Bukti Transfer
+    Route::get('/pesanan/{orderId}/unggah-bukti', [CustomerController::class, 'uploadProof'])->name('customer.order.upload');
+    Route::post('/pesanan/{orderId}/unggah-bukti', [CustomerController::class, 'storeProof'])->name('customer.order.proof.store');
+
     // Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
     Route::get('/orders/{orderNumber}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{orderNumber}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
-    
+
     // Payment
     Route::post('/orders/{orderNumber}/upload-proof', [PaymentController::class, 'uploadProof'])->name('payment.upload');
-    
+
     // // Wishlist
-    // Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+    Route::post('/wishlist/toggle/{productId}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
     // Route::post('/wishlist/toggle/{productId}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
-    
+
     // // Profile
     // Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     // Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('profile.password');
-    
+
     // // Addresses
     // Route::get('/addresses', [AddressController::class, 'index'])->name('addresses');
     // Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
