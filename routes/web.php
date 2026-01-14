@@ -25,16 +25,16 @@ use App\Http\Controllers\Customer\AddressController;
 */
 
 // Landing Page
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('guest.home');
 
 // Product Catalog
 Route::get('/katalog', [CatalogController::class, 'index'])->name('guest.catalog');
-Route::get('/produk/{slug}', [ProductController::class, 'show'])->name('product.show');
+Route::get('/produk/{id}', [ProductController::class, 'show'])->name('guest.product');
 
 // About Page
 Route::get('/tentang', function () {
     return view('guest.about');
-})->name('about');
+})->name('guest.about');
 
 /*
 |--------------------------------------------------------------------------
@@ -69,11 +69,11 @@ Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer
     Route::get('/tentang', function () {
         return view('customer.about');
     })->name('about');
-    Route::get('/produk/{slug}', [CustomerProductController::class, 'show'])->name('product.show');
+    Route::get('/produk/{id}', [CustomerProductController::class, 'show'])->name('product');
 
     // Cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
-    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
     Route::put('/cart/items/{id}', [CartController::class, 'updateQuantity'])->name('cart.update');
     Route::delete('/cart/items/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
 
@@ -82,8 +82,8 @@ Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer
     Route::post('/checkout', [CheckoutController::class, 'placeOrder'])->name('checkout.process');
 
      // Unggah Bukti Transfer
-    Route::get('/pesanan/{orderId}/unggah-bukti', [CustomerController::class, 'uploadProof'])->name('customer.order.upload');
-    Route::post('/pesanan/{orderId}/unggah-bukti', [CustomerController::class, 'storeProof'])->name('customer.order.proof.store');
+    Route::get('/pesanan/{orderId}/unggah-bukti', [CustomerController::class, 'uploadProof'])->name('order.upload');
+    Route::post('/pesanan/{orderId}/unggah-bukti', [CustomerController::class, 'storeProof'])->name('order.proof.store');
 
     // Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
@@ -93,22 +93,23 @@ Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer
     // Payment
     Route::post('/orders/{orderNumber}/upload-proof', [PaymentController::class, 'uploadProof'])->name('payment.upload');
 
-    // // Wishlist
+    // Wishlist
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+    Route::post('/wishlist/add/{productId}', [WishlistController::class, 'add'])->name('wishlist.add');
+    Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
     Route::post('/wishlist/toggle/{productId}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
-    // Route::post('/wishlist/toggle/{productId}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
-    // // Profile
-    // Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
-    // Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    // Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('profile.password');
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('password.update');
 
-    // // Addresses
-    // Route::get('/addresses', [AddressController::class, 'index'])->name('addresses');
-    // Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
-    // Route::put('/addresses/{id}', [AddressController::class, 'update'])->name('addresses.update');
-    // Route::delete('/addresses/{id}', [AddressController::class, 'delete'])->name('addresses.delete');
-    // Route::post('/addresses/{id}/default', [AddressController::class, 'setDefault'])->name('addresses.default');
+    // Alamat
+    Route::get('/alamat', [AddressController::class, 'index'])->name('addresses');
+    Route::post('/alamat', [AddressController::class, 'store'])->name('addresses.store');
+    Route::put('/alamat/{id}', [AddressController::class, 'update'])->name('addresses.update');
+    Route::delete('/alamat/{id}', [AddressController::class, 'delete'])->name('addresses.destroy');
+    Route::put('/alamat/{id}/default', [AddressController::class, 'setDefault'])->name('addresses.set-default');
 });
 
 /*

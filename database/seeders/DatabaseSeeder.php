@@ -131,34 +131,36 @@ class DatabaseSeeder extends Seeder
     private function createShippingRates(): void
     {
         $rates = [
-            // Jakarta Area
+            // DKI Jakarta
             ['city' => 'Jakarta Pusat', 'province' => 'DKI Jakarta', 'rate' => 24000],
             ['city' => 'Jakarta Selatan', 'province' => 'DKI Jakarta', 'rate' => 24000],
             ['city' => 'Jakarta Utara', 'province' => 'DKI Jakarta', 'rate' => 24000],
             ['city' => 'Jakarta Barat', 'province' => 'DKI Jakarta', 'rate' => 24000],
             ['city' => 'Jakarta Timur', 'province' => 'DKI Jakarta', 'rate' => 24000],
             
-            // Jabodetabek
-            ['city' => 'Depok', 'province' => 'West Java', 'rate' => 24000],
-            ['city' => 'Bekasi', 'province' => 'West Java', 'rate' => 25000],
+            // Jabodetabek (Jawa Barat & Banten)
+            ['city' => 'Depok', 'province' => 'Jawa Barat', 'rate' => 24000],
+            ['city' => 'Bekasi', 'province' => 'Jawa Barat', 'rate' => 25000],
             ['city' => 'Tangerang', 'province' => 'Banten', 'rate' => 25000],
             ['city' => 'Tangerang Selatan', 'province' => 'Banten', 'rate' => 25000],
-            ['city' => 'Bogor', 'province' => 'West Java', 'rate' => 27000],
+            ['city' => 'Bogor', 'province' => 'Jawa Barat', 'rate' => 27000],
             
-            // West Java
-            ['city' => 'Bandung', 'province' => 'West Java', 'rate' => 31000],
-            ['city' => 'Cirebon', 'province' => 'West Java', 'rate' => 31000],
-            ['city' => 'Sukabumi', 'province' => 'West Java', 'rate' => 31000],
+            // Jawa Barat lainnya
+            ['city' => 'Bandung', 'province' => 'Jawa Barat', 'rate' => 31000],
+            ['city' => 'Cirebon', 'province' => 'Jawa Barat', 'rate' => 31000],
+            ['city' => 'Sukabumi', 'province' => 'Jawa Barat', 'rate' => 31000],
             
-            // Central Java
-            ['city' => 'Semarang', 'province' => 'Central Java', 'rate' => 39000],
-            ['city' => 'Solo', 'province' => 'Central Java', 'rate' => 39000],
-            ['city' => 'Yogyakarta', 'province' => 'Yogyakarta', 'rate' => 39000],
+            // Jawa Tengah
+            ['city' => 'Semarang', 'province' => 'Jawa Tengah', 'rate' => 39000],
+            ['city' => 'Solo', 'province' => 'Jawa Tengah', 'rate' => 39000],
             
-            // East Java
-            ['city' => 'Surabaya', 'province' => 'East Java', 'rate' => 47000],
-            ['city' => 'Malang', 'province' => 'East Java', 'rate' => 47000],
-            ['city' => 'Sidoarjo', 'province' => 'East Java', 'rate' => 47000],
+            // DI Yogyakarta
+            ['city' => 'Yogyakarta', 'province' => 'DI Yogyakarta', 'rate' => 39000],
+            
+            // Jawa Timur
+            ['city' => 'Surabaya', 'province' => 'Jawa Timur', 'rate' => 47000],
+            ['city' => 'Malang', 'province' => 'Jawa Timur', 'rate' => 47000],
+            ['city' => 'Sidoarjo', 'province' => 'Jawa Timur', 'rate' => 47000],
         ];
 
         foreach ($rates as $rate) {

@@ -1,74 +1,121 @@
-{{-- resources/views/components/product-card.blade.php --}}
-@props(['product'])
+{{-- 
+    Product Card Component - Zalora Layout + DistroZone Design System
+    
+    Props:
+    - $product: Product model with image, name, price, category, etc.
+    - $showWishlist: boolean (default: false for guest)
+--}}
 
-<div class="group relative">
-    @php
-        $routeName = auth()->check() && auth()->user()->role === 'customer'
-            ? 'customer.product.show'
-            : 'product.show';
-    @endphp
-    <a href="{{ route($routeName, $product->slug) }}" class="block">
-        <div class="bg-white border-4 border-black rounded-2xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-200">
-            {{-- Image Container --}}
-            <div class="relative aspect-square bg-gray-100 overflow-hidden">
-                <img
-                    src="{{ $product->primaryImage?->image_path ? asset('storage/' . $product->primaryImage->image_path) : asset('images/placeholder.png') }}"
-                    alt="{{ $product->name }}"
-                    class="w-full h-full object-cover"
-                >
+@props(['product', 'showWishlist' => false])
 
-                {{-- Badges --}}
-                <div class="absolute top-3 left-3 flex flex-col gap-2">
-                    @if($product->is_featured)
-                    <span class="px-3 py-1 bg-pink-600 text-white text-xs font-bold border-2 border-black rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                        BEST
-                    </span>
-                    @endif
-
-                    @if($product->created_at->isToday() || $product->created_at->isYesterday())
-                    <span class="px-3 py-1 bg-blue-400 text-white text-xs font-bold border-2 border-black rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                        NEW
-                    </span>
-                    @endif
-                </div>
-
-                {{-- Wishlist Button (Guest can't use) --}}
-                <button
-                    onclick="event.preventDefault(); alert('Silakan login untuk menambahkan ke wishlist');"
-                    class="absolute top-3 right-3 w-10 h-10 bg-white border-3 border-black rounded-full flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-pink-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all"
-                >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+<div class="group relative bg-white border border-border rounded-lg overflow-hidden hover:shadow-card transition-base">
+    <!-- Product Image (Portrait 3:4 ratio like Zalora) -->
+    <div class="relative aspect-[3/4] overflow-hidden bg-bg-secondary">
+        <a href="{{ route('guest.product', $product->id) }}">
+            @if ($product->primaryImage)
+                <img src="{{ Storage::url($product->primaryImage->image_path) }}" alt="{{ $product->name }}"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-base">
+            @else
+                <!-- Placeholder -->
+                <div class="w-full h-full flex items-center justify-center bg-bg-secondary">
+                    <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                </button>
-            </div>
-
-            {{-- Product Info --}}
-            <div class="p-4">
-                {{-- Category --}}
-                <p class="text-xs font-bold text-gray-500 uppercase mb-1">
-                    {{ $product->category->name }}
-                </p>
-
-                {{-- Product Name --}}
-                <h3 class="text-base font-bold mb-2 line-clamp-1">
-                    {{ $product->name }}
-                </h3>
-
-                {{-- Price --}}
-                <div class="flex items-center justify-between">
-                    <p class="text-lg font-bold">
-                        Rp {{ number_format($product->base_price, 0, ',', '.') }}
-                    </p>
-
-                    {{-- Quick View Button --}}
-                    <button class="w-9 h-9 bg-blue-400 border-3 border-black rounded-full flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                        </svg>
-                    </button>
                 </div>
+            @endif
+        </a>
+
+        <!-- Badge (NEW / SALE) - Top Left -->
+        @if ($product->is_featured)
+            <div class="absolute top-3 left-3 bg-accent text-white text-xs font-semibold px-3 py-1 rounded">
+                NEW
             </div>
+        @endif
+
+        <!-- Wishlist Heart - Bottom Right (only show for logged in users) -->
+        @if ($showWishlist)
+            <button type="button"
+                class="absolute bottom-3 right-3 bg-white hover:bg-accent hover:text-white text-gray-800 p-2 rounded-full shadow-md transition-fast"
+                onclick="toggleWishlist({{ $product->id }})">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            </button>
+        @endif
+    </div>
+
+    <!-- Product Info -->
+    <div class="p-4">
+        <!-- Category (optional) -->
+        @if (isset($product->category))
+            <p class="text-text-secondary text-xs uppercase tracking-wide mb-1">
+                {{ $product->category->name }}
+            </p>
+        @endif
+
+        <!-- Product Name -->
+        <a href="{{ route('guest.product', $product->id) }}" class="block">
+            <h3 class="text-gray-800 font-semibold text-base mb-2 line-clamp-2 group-hover:text-accent transition-fast">
+                {{ $product->name }}
+            </h3>
+        </a>
+
+        <!-- Price -->
+        <div class="flex items-baseline gap-2 mb-3">
+            <span class="text-accent font-bold text-lg">
+                Rp {{ number_format($product->base_price, 0, ',', '.') }}
+            </span>
+            <!-- Old Price if on sale -->
+            @if (isset($product->old_price) && $product->old_price > $product->base_price)
+                <span class="text-text-secondary text-sm line-through">
+                    Rp {{ number_format($product->old_price, 0, ',', '.') }}
+                </span>
+            @endif
         </div>
-    </a>
+
+        <!-- Stock Info -->
+        @if ($product->getTotalStock() > 0)
+            <p class="text-xs text-gray-600 mb-3">
+                Stok: {{ $product->getTotalStock() }} pcs
+            </p>
+        @else
+            <p class="text-xs text-red-500 mb-3">
+                Stok Habis
+            </p>
+        @endif
+
+        <!-- Add to Cart Button -->
+        <a href="{{ route('guest.product', $product->id) }}"
+            class="block w-full text-center bg-primary hover:bg-accent text-white font-semibold py-2.5 rounded transition-fast">
+            Lihat Detail
+        </a>
+    </div>
 </div>
+
+@push('scripts')
+    <script>
+        function toggleWishlist(productId) {
+            @auth
+            // AJAX call to toggle wishlist
+            fetch('/customer/wishlist/toggle/' + productId, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update UI (could add filled heart animation)
+                        location.reload();
+                    }
+                });
+        @else
+            window.location.href = '{{ route('login') }}';
+        @endauth
+        }
+    </script>
+@endpush

@@ -1,248 +1,206 @@
-{{-- resources/views/customer/cart.blade.php --}}
-@extends('layouts.customer')
+<x-layouts.customer>
+    <x-slot:title>Keranjang Belanja - DistroZone</x-slot:title>
 
-@section('title', 'Keranjang Belanja - DistroZone')
+    <div class="bg-bg-secondary min-h-screen py-8">
+        <div class="container mx-auto px-4">
+            <!-- Page Header -->
+            <h1 class="font-display font-bold text-3xl mb-8">Keranjang Belanja</h1>
 
-@section('content')
-{{-- @php
-        dd( $cart);
-@endphp --}}
-<div class="px-6 py-8">
+            @if ($cart && $cart->items->count() > 0)
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Cart Items (Left - 2 columns) -->
+                    <div class="lg:col-span-2 space-y-4">
+                        @foreach ($cart->items as $item)
+                            <div class="bg-white rounded-lg p-6 shadow-card">
+                                <div class="flex gap-6">
+                                    <!-- Product Image -->
+                                    <div class="w-24 h-24 flex-shrink-0">
+                                        @if ($item->productVariant->product->primaryImage)
+                                            <img src="{{ Storage::url($item->productVariant->product->primaryImage->image_path) }}"
+                                                alt="{{ $item->productVariant->product->name }}"
+                                                class="w-full h-full object-cover rounded">
+                                        @else
+                                            <div
+                                                class="w-full h-full bg-bg-secondary rounded flex items-center justify-center">
+                                                <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                            </div>
+                                        @endif
+                                    </div>
 
-    {{-- Page Header --}}
-    <div class="bg-gradient-to-r from-blue-400 to-cyan-400 border-4 border-black rounded-2xl p-8 mb-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <h1 class="text-5xl font-black italic mb-2">KERANJANG KAMU</h1>
-        <p class="text-lg">Ready to look cool today?</p>
-    </div>
+                                    <!-- Product Info -->
+                                    <div class="flex-1">
+                                        <h3 class="font-semibold text-lg mb-1">
+                                            {{ $item->productVariant->product->name }}</h3>
+                                        <p class="text-text-secondary text-sm mb-2">
+                                            {{ $item->productVariant->color }} / {{ $item->productVariant->size }}
+                                        </p>
+                                        <p class="text-accent font-bold text-lg">
+                                            Rp
+                                            {{ number_format($item->productVariant->product->base_price, 0, ',', '.') }}
+                                        </p>
+                                    </div>
 
-    @if(collect($cart['items'])->isEmpty())
-        {{-- Empty Cart --}}
-        <div class="bg-white border-4 border-black rounded-2xl p-16 text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            <div class="w-32 h-32 bg-gray-100 border-3 border-black rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                </svg>
-            </div>
-            <h3 class="text-2xl font-black mb-2">Keranjang Kosong</h3>
-            <p class="text-gray-600 mb-6">Yuk, mulai belanja sekarang!</p>
-            <a href="{{ route('customer.catalog') }}" class="inline-flex items-center gap-2 px-8 py-4 bg-pink-600 text-white font-bold border-3 border-black rounded-xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                </svg>
-                Continue Shopping
-            </a>
-        </div>
-    @else
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    <!-- Quantity Controls -->
+                                    <div class="flex flex-col items-end justify-between">
+                                        <button onclick="removeFromCart({{ $item->id }})"
+                                            class="text-gray-400 hover:text-red-500 transition-fast">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
 
-            {{-- Cart Items --}}
-            <div class="lg:col-span-2 space-y-4">
-                @foreach($cartItems as $item)
-                <div class="bg-white border-4 border-black rounded-2xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                    <div class="flex items-start gap-6">
-                        {{-- Product Image --}}
-                        <div class="w-24 h-24 bg-gray-100 border-3 border-black rounded-xl overflow-hidden flex-shrink-0">
-                            <img
-                                src="{{ $item->productVariant->product->primaryImage?->image_path ? asset('storage/' . $item->productVariant->product->primaryImage->image_path) : asset('images/placeholder.png') }}"
-                                alt="{{ $item->productVariant->product->name }}"
-                                class="w-full h-full object-cover"
-                            >
-                        </div>
+                                        <div class="flex items-center gap-2 border border-border rounded">
+                                            <button
+                                                onclick="updateQuantity({{ $item->id }}, {{ $item->quantity - 1 }})"
+                                                class="px-3 py-1 hover:bg-bg-secondary transition-fast"
+                                                {{ $item->quantity <= 1 ? 'disabled' : '' }}>
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M20 12H4" />
+                                                </svg>
+                                            </button>
+                                            <span class="px-4 font-semibold">{{ $item->quantity }}</span>
+                                            <button
+                                                onclick="updateQuantity({{ $item->id }}, {{ $item->quantity + 1 }})"
+                                                class="px-3 py-1 hover:bg-bg-secondary transition-fast"
+                                                {{ $item->quantity >= $item->productVariant->stock ? 'disabled' : '' }}>
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M12 4v16m8-8H4" />
+                                                </svg>
+                                            </button>
+                                        </div>
 
-                        {{-- Product Info --}}
-                        <div class="flex-1">
-                            <h3 class="text-lg font-black mb-1">{{ $item->productVariant->product->name }}</h3>
-                            <p class="text-sm text-gray-600 mb-3">
-                                Size: {{ $item->productVariant->size }} • {{ $item->productVariant->color }}
-                            </p>
-
-                            {{-- Quantity Controls --}}
-                            <div class="flex items-center gap-3">
-                                <div class="flex items-center border-3 border-black rounded-full overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                    <button
-                                        onclick="updateQuantity({{ $item->id }}, {{ $item->quantity - 1 }})"
-                                        class="w-10 h-10 flex items-center justify-center bg-white hover:bg-gray-50 transition font-bold"
-                                    >
-                                        −
-                                    </button>
-                                    <span class="w-12 h-10 flex items-center justify-center font-bold bg-gray-50">
-                                        {{ $item->quantity }}
-                                    </span>
-                                    <button
-                                        onclick="updateQuantity({{ $item->id }}, {{ $item->quantity + 1 }})"
-                                        class="w-10 h-10 flex items-center justify-center bg-white hover:bg-gray-50 transition font-bold"
-                                    >
-                                        +
-                                    </button>
+                                        @if ($item->quantity >= $item->productVariant->stock)
+                                            <p class="text-red-500 text-xs">Stok maksimal</p>
+                                        @endif
+                                    </div>
                                 </div>
+                            </div>
+                        @endforeach
+                    </div>
 
-                                <p class="text-sm text-gray-500">
-                                    IDR {{ number_format($item->price, 0, ',', '.') }} / item
+                    <!-- Order Summary (Right - 1 column, Sticky) -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-lg p-6 shadow-card sticky top-24">
+                            <h2 class="font-display font-bold text-xl mb-6">Ringkasan Belanja</h2>
+
+                            <!-- Summary Items -->
+                            <div class="space-y-3 mb-6">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-text-secondary">Total Produk ({{ $cart->items->sum('quantity') }}
+                                        items)</span>
+                                    <span class="font-semibold">Rp
+                                        {{ number_format($cart->items->sum(fn($item) => $item->quantity * $item->productVariant->product->base_price), 0, ',', '.') }}</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-text-secondary">Ongkir</span>
+                                    <span class="text-gray-600">Dihitung di checkout</span>
+                                </div>
+                            </div>
+
+                            <hr class="border-border mb-6">
+
+                            <!-- Total -->
+                            <div class="flex justify-between items-center mb-6">
+                                <span class="font-bold text-lg">Total</span>
+                                <span class="font-bold text-2xl text-accent">
+                                    Rp
+                                    {{ number_format($cart->items->sum(fn($item) => $item->quantity * $item->productVariant->product->base_price), 0, ',', '.') }}
+                                </span>
+                            </div>
+
+                            <!-- Checkout Button -->
+                            <a href="{{ route('customer.checkout') }}"
+                                class="block w-full bg-primary hover:bg-accent text-white text-center font-bold py-4 rounded-lg transition-fast mb-3">
+                                Lanjut ke Checkout
+                            </a>
+
+                            <a href="{{ route('customer.catalog') }}"
+                                class="block w-full text-center text-gray-600 hover:text-accent text-sm transition-fast">
+                                ← Lanjut Belanja
+                            </a>
+
+                            <!-- Promo Info -->
+                            <div class="mt-6 p-4 bg-accent bg-opacity-10 rounded-lg">
+                                <p class="text-sm text-gray-800">
+                                    🚚 <strong>Gratis Ongkir</strong> untuk Jakarta & Depok
                                 </p>
                             </div>
                         </div>
-
-                        {{-- Price & Delete --}}
-                        <div class="text-right">
-                            <p class="text-2xl font-black text-pink-600 mb-4">
-                                IDR {{ number_format($item->price * $item->quantity, 0, ',', '.') }}
-                            </p>
-
-                            <button
-                                onclick="removeItem({{ $item->id }})"
-                                class="w-10 h-10 border-3 border-black rounded-full flex items-center justify-center hover:bg-pink-50 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                            >
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
-                            </button>
-                        </div>
                     </div>
                 </div>
-                @endforeach
-
-                {{-- Free Shipping Promo --}}
-                {{-- @if($subtotal < 500000)
-                <div class="bg-gradient-to-r from-blue-100 to-cyan-100 border-4 border-black rounded-2xl p-6 flex items-center gap-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                    <div class="w-12 h-12 bg-blue-400 border-3 border-black rounded-full flex items-center justify-center flex-shrink-0">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-bold">
-                            Gratis ongkir untuk pembelian di atas IDR 500.000. Tambah
-                            <span class="text-pink-600">IDR {{ number_format(500000 - $subtotal, 0, ',', '.') }}</span> lagi!
-                        </p>
-                    </div>
-                </div>
-                @endif --}}
-            </div>
-
-            {{-- Order Summary --}}
-            <div class="lg:col-span-1">
-                <div class="bg-white border-4 border-black rounded-2xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sticky top-6">
-                    <h3 class="text-lg font-black mb-6 flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                        </svg>
-                        Ringkasan
-                    </h3>
-
-                    <div class="space-y-3 mb-6">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm">Total Harga ({{ $cartItems->sum('quantity') }} Barang)</span>
-                            <span class="font-bold">IDR {{ number_format($subtotal, 0, ',', '.') }}</span>
-                        </div>
-
-                        <div class="flex items-center justify-between text-green-600">
-                            <span class="text-sm">Diskon Barang</span>
-                            <span class="font-bold">-IDR 0</span>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm">Ongkos Kirim</span>
-                            <span class="font-bold">IDR {{ number_format($shipping, 0, ',', '.') }}</span>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm">Biaya Layanan</span>
-                            <span class="font-bold">IDR {{ number_format($serviceFee, 0, ',', '.') }}</span>
-                        </div>
-                    </div>
-
-                    {{-- Voucher Input --}}
-                    {{-- <div class="mb-6">
-                        <p class="text-xs font-bold mb-2 uppercase">Punya Kode Voucher?</p>
-                        <div class="flex gap-2">
-                            <input
-                                type="text"
-                                placeholder="KODEPROMO"
-                                class="flex-1 px-4 py-2 border-3 border-black rounded-xl font-medium uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-600"
-                            >
-                            <button class="px-6 py-2 bg-black text-white font-bold border-3 border-black rounded-xl hover:bg-gray-800 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                Pakai
-                            </button>
-                        </div>
-                    </div> --}}
-
-                    <div class="border-t-3 border-black pt-4 mb-6">
-                        <div class="flex items-center justify-between">
-                            <span class="text-lg font-bold">Total Tagihan</span>
-                            <span class="text-2xl font-black text-pink-600">
-                                IDR {{ number_format($subtotal + $shipping + $serviceFee, 0, ',', '.') }}
-                            </span>
-                        </div>
-                    </div>
-
-                    <a href="{{ route('customer.checkout') }}" class="block w-full px-6 py-4 bg-pink-600 text-white text-center font-black border-3 border-black rounded-xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all">
-                        LANJUTKAN KE CHECKOUT →
+            @else
+                <!-- Empty Cart State -->
+                <div class="bg-white rounded-lg p-12 text-center shadow-card max-w-md mx-auto">
+                    <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <h2 class="font-display font-bold text-2xl mb-2">Keranjang Kosong</h2>
+                    <p class="text-text-secondary mb-6">Belum ada produk di keranjang kamu</p>
+                    <a href="{{ route('customer.catalog') }}"
+                        class="inline-block bg-primary hover:bg-accent text-white font-semibold px-8 py-3 rounded-lg transition-fast">
+                        Mulai Belanja
                     </a>
-
-                    <p class="text-xs text-center text-gray-500 mt-4">
-                        Transaksi aman & terenkripsi
-                    </p>
-
-                    {{-- Payment Methods --}}
-                    <div class="flex items-center justify-center gap-3 mt-4">
-                        <div class="px-3 py-1 border-2 border-gray-300 rounded-lg text-xs font-bold text-gray-500">VISA</div>
-                        <div class="px-3 py-1 border-2 border-gray-300 rounded-lg text-xs font-bold text-gray-500">MC</div>
-                        <div class="px-3 py-1 border-2 border-gray-300 rounded-lg text-xs font-bold text-gray-500">QRIS</div>
-                        <div class="px-3 py-1 border-2 border-gray-300 rounded-lg text-xs font-bold text-gray-500">BANK</div>
-                    </div>
                 </div>
-            </div>
+            @endif
         </div>
-    @endif
+    </div>
 
-</div>
+    @push('scripts')
+        <script>
+            function updateQuantity(itemId, newQuantity) {
+                if (newQuantity < 1) return;
 
-@push('scripts')
-<script>
-function updateQuantity(itemId, newQuantity) {
-    if (newQuantity < 1) {
-        if (confirm('Hapus item dari keranjang?')) {
-            removeItem(itemId);
-        }
-        return;
-    }
+                fetch(`/customer/cart/${itemId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            quantity: newQuantity
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert(data.message || 'Gagal update quantity');
+                        }
+                    });
+            }
 
-    fetch(`/customer/cart/items/${itemId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({ quantity: newQuantity })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        } else {
-            alert(data.message || 'Gagal mengupdate keranjang');
-        }
-    })
-    .catch(err => alert('Terjadi kesalahan'));
-}
+            function removeFromCart(itemId) {
+                if (!confirm('Hapus produk dari keranjang?')) return;
 
-function removeItem(itemId) {
-    fetch(`/customer/cart/items/${itemId}`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        }
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        } else {
-            alert(data.message || 'Gagal menghapus item');
-        }
-    })
-    .catch(err => alert('Terjadi kesalahan'));
-}
-</script>
-@endpush
-@endsection
+                fetch(`/customer/cart/${itemId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert(data.message || 'Gagal menghapus item');
+                        }
+                    });
+            }
+        </script>
+    @endpush
+</x-layouts.customer>

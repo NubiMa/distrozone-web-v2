@@ -75,18 +75,18 @@ class ShippingService
     }
 
     /**
-     * Check if shipping is available for the province
-     * Only Java island is allowed
+     * Cek apakah pengiriman tersedia untuk provinsi tersebut
+     * Hanya Pulau Jawa yang dilayani
      */
     public function isShippingAvailable(string $province): bool
     {
         $allowedProvinces = [
             'DKI Jakarta',
-            'West Java',
-            'Central Java',
-            'East Java',
+            'Jawa Barat',
+            'Jawa Tengah',
+            'Jawa Timur',
             'Banten',
-            'Yogyakarta',
+            'DI Yogyakarta',
         ];
 
         return in_array($province, $allowedProvinces);

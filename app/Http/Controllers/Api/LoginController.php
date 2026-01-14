@@ -12,16 +12,15 @@ use Illuminate\Validation\ValidationException;
 class LoginController extends Controller
 {
     /**
-     * Show login form
+     * Tampilkan form login
      */
     public function showLoginForm()
     {
         return view('auth.login');
-        // dd('MASUK LOGIN FORM');
     }
 
     /**
-     * Handle login request
+     * Proses login
      */
     public function login(Request $request)
     {
@@ -30,20 +29,22 @@ class LoginController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Attempt login
+        // Coba login
         if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']], $request->filled('remember'))) {
             $request->session()->regenerate();
 
             $user = Auth::user();
 
-            // Redirect based on role
+            // Redirect berdasarkan role
             switch ($user->role) {
                 case 'admin':
-                    return redirect()->route('admin.dashboard');
+                    // Sementara redirect ke guest.home sampai admin dashboard dibuat
+                    return redirect()->route('guest.home')->with('info', 'Dashboard admin belum tersedia.');
                 case 'cashier':
-                    return redirect()->route('cashier.dashboard');
+                    // Sementara redirect ke guest.home sampai kasir dashboard dibuat
+                    return redirect()->route('guest.home')->with('info', 'Dashboard kasir belum tersedia.');
                 case 'customer':
-                    // Redirect back to previous page or home
+                    // Redirect ke halaman sebelumnya atau home customer
                     return redirect()->intended(route('customer.home'));
                 default:
                     return redirect()->route('guest.home');
@@ -56,7 +57,7 @@ class LoginController extends Controller
     }
 
     /**
-     * Handle logout
+     * Proses logout
      */
     public function logout(Request $request)
     {
@@ -64,6 +65,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home');
+        return redirect()->route('guest.home');
     }
 }

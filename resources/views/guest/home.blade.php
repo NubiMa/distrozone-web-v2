@@ -1,163 +1,156 @@
-{{-- resources/views/guest/home.blade.php --}}
-@extends('layouts.guest')
+<x-layouts.guest>
+    <x-slot:title>DistroZone - Streetwear Distro Terbaik</x-slot:title>
 
-@section('title', 'DistroZone - Style Masa Depan, Harga Teman')
-
-@section('content')
-<div class="px-6 py-8">
-
-    {{-- Hero Section --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
-        {{-- Main Hero --}}
-        <div class="lg:col-span-2">
-            <div class="relative bg-gradient-to-br from-gray-800 to-gray-600 border-4 border-black rounded-3xl overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] h-[500px]">
-                {{-- <img
-                    src="{{ asset('images/hero-model.jpg') }}"
-                    alt="Hero Model"
-                    class="w-full h-full object-cover opacity-90"
-                > --}}
-
-                {{-- Overlay Content --}}
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-8">
-                    <span class="inline-block px-4 py-1 bg-pink-600 text-white text-xs font-bold border-2 border-white rounded-full mb-4 w-fit shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                        NEW DROP 2024
-                    </span>
-
-                    <h1 class="text-5xl font-black text-white mb-2">
-                        STYLE MASA DEPAN
+    <!-- Hero Section (Zalora-style full-width banner) -->
+    <section class="relative bg-gray-50">
+        <div class="container mx-auto px-4 py-16 md:py-24">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Left: Text Content -->
+                <div class="space-y-6">
+                    <h1 class="font-display font-bold text-5xl md:text-6xl text-gray-800 leading-tight">
+                        Best Fashion Sale
+                        <span class="text-accent">Up to 70% Off</span>
                     </h1>
-                    <h2 class="text-5xl font-black text-blue-400 mb-4">
-                        HARGA TEMAN
-                    </h2>
-
-                    <p class="text-white text-lg mb-6 max-w-lg">
-                        Koleksi Y2K Terbatas. Estetika retro-futuristik untuk gen-z yang berani beda.
+                    <p class="text-gray-600 text-lg">
+                        Koleksi kaos distro terbaru dengan desain eksklusif. Gratis ongkir untuk Jakarta & Depok.
                     </p>
-
-                    <a href="{{ route('guest.catalog') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-bold border-3 border-black rounded-xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all w-fit">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                        </svg>
-                        Cek Katalog
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        {{-- Side Promotions --}}
-        <div class="flex flex-col gap-6">
-            {{-- Flash Sale --}}
-            <div class="relative bg-gradient-to-br from-blue-400 to-blue-500 border-4 border-black rounded-3xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] h-[240px] flex flex-col justify-between">
-                <div class="absolute top-4 right-4 w-16 h-16 bg-pink-600 rounded-full border-3 border-black"></div>
-
-                <div>
-                    <h3 class="text-3xl font-black text-white italic mb-2">
-                        FLASH<br>SALE
-                    </h3>
-                    <span class="inline-block px-3 py-1 bg-white text-black text-sm font-bold border-2 border-black rounded-full">
-                        Diskon 50%
-                    </span>
-                </div>
-
-                <div class="flex justify-center">
-                    <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
-                        <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path>
-                    </svg>
-                </div>
-            </div>
-
-            {{-- Member Promo --}}
-            <div class="bg-gradient-to-br from-green-100 to-green-200 border-4 border-black rounded-3xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] h-[240px] flex flex-col justify-center text-center">
-                <p class="text-sm font-bold text-gray-600 mb-2">MEMBER BARU?</p>
-                <h3 class="text-4xl font-black text-pink-600 mb-2">GRATIS</h3>
-                <p class="text-lg font-bold text-gray-800">ONGKIR</p>
-            </div>
-        </div>
-    </div>
-
-    {{-- Scrolling Marquee --}}
-    <div class="bg-black border-4 border-black rounded-2xl py-4 mb-12 overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <div class="flex items-center gap-8 text-white font-bold text-sm animate-marquee whitespace-nowrap">
-            <span class="flex items-center gap-2">⭐ NEW ARRIVALS</span>
-            <span class="flex items-center gap-2">⭐ FREE SHIPPING</span>
-            <span class="flex items-center gap-2">⭐ LIMITED EDITION</span>
-            <span class="flex items-center gap-2">⭐ Y2K VIBES</span>
-            <span class="flex items-center gap-2">⭐ DISTROZONE ORIGINAL</span>
-            <span class="flex items-center gap-2">⭐ NEW ARRIVALS</span>
-            <span class="flex items-center gap-2">⭐ FREE SHIPPING</span>
-            <span class="flex items-center gap-2">⭐ NEW ARRIVALS</span>
-            <span class="flex items-center gap-2">⭐ FREE SHIPPING</span>
-            <span class="flex items-center gap-2">⭐ LIMITED EDITION</span>
-            <span class="flex items-center gap-2">⭐ Y2K VIBES</span>
-            <span class="flex items-center gap-2">⭐ DISTROZONE ORIGINAL</span>
-            <span class="flex items-center gap-2">⭐ NEW ARRIVALS</span>
-            <span class="flex items-center gap-2">⭐ FREE SHIPPING</span>
-        </div>
-    </div>
-
-    {{-- Category Section --}}
-    <div class="mb-12">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-black flex items-center gap-2">
-                <span class="text-pink-600">🏷️</span>
-                KATEGORI PILIHAN
-            </h2>
-            <a href="{{ route('guest.catalog') }}" class="text-sm font-bold text-pink-600 hover:underline">
-                Lihat Semua →
-            </a>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            @foreach(['KAOS' => 'bg-pink-100', 'HOODIES' => 'bg-blue-100', 'OUTERWEAR' => 'bg-green-100', 'AKSESORIS' => 'bg-yellow-100'] as $category => $color)
-            <a href="{{ route('guest.catalog', ['category' => strtolower($category)]) }}" class="group">
-                <div class="{{ $color }} border-4 border-black rounded-2xl p-8 flex flex-col items-center justify-center gap-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-200 h-40">
-                    <div class="w-16 h-16 bg-white border-3 border-black rounded-full flex items-center justify-center">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                        </svg>
+                    <div class="flex gap-4">
+                        <a href="{{ route('guest.catalog') }}"
+                            class="inline-block bg-primary hover:bg-accent text-white font-semibold px-8 py-4 rounded-lg transition-fast">
+                            Belanja Sekarang
+                        </a>
+                        <a href="{{ route('guest.about') }}"
+                            class="inline-block border-2 border-primary hover:border-accent text-primary hover:text-accent font-semibold px-8 py-4 rounded-lg transition-fast">
+                            Selengkapnya
+                        </a>
                     </div>
-                    <h3 class="text-lg font-black">{{ $category }}</h3>
                 </div>
-            </a>
-            @endforeach
-        </div>
-    </div>
 
-    {{-- New Drops Section --}}
-    <div>
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-black flex items-center gap-2">
-                <span class="text-blue-400">🆕</span>
-                NEW DROPS
+                <!-- Right: Image -->
+                <div class="relative aspect-square rounded-2xl overflow-hidden bg-gray-200">
+                    <!-- Hero image placeholder -->
+                    <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=800" alt="Hero"
+                        class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Section (Zalora-style tiles) -->
+    <section class="container mx-auto px-4 py-section">
+        <div class="text-center mb-12">
+            <h2 class="font-display font-bold text-3xl md:text-4xl text-gray-800 mb-4">
+                Belanja Berdasarkan Kategori
             </h2>
-            <a href="{{ route('guest.catalog', ['filter' => 'new']) }}" class="text-sm font-bold text-pink-600 hover:underline">
-                Lihat Semua →
-            </a>
+            <p class="text-gray-600">Temukan koleksi kaos distro favoritmu</p>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            @forelse($newProducts as $product)
-                <x-product-card :product="$product" />
+            @forelse($categories as $category)
+                <x-category-card :category="$category" />
             @empty
-                <div class="col-span-4 text-center py-12">
-                    <p class="text-gray-500">Belum ada produk baru</p>
+                <!-- Placeholder categories -->
+                <div class="bg-bg-secondary rounded-lg p-8 text-center">
+                    <div class="w-16 h-16 mx-auto bg-gray-300 rounded-full mb-4"></div>
+                    <p class="font-semibold">Basic Tees</p>
+                </div>
+                <div class="bg-bg-secondary rounded-lg p-8 text-center">
+                    <div class="w-16 h-16 mx-auto bg-gray-300 rounded-full mb-4"></div>
+                    <p class="font-semibold">Graphic Tees</p>
+                </div>
+                <div class="bg-bg-secondary rounded-lg p-8 text-center">
+                    <div class="w-16 h-16 mx-auto bg-gray-300 rounded-full mb-4"></div>
+                    <p class="font-semibold">Oversized</p>
+                </div>
+                <div class="bg-bg-secondary rounded-lg p-8 text-center">
+                    <div class="w-16 h-16 mx-auto bg-gray-300 rounded-full mb-4"></div>
+                    <p class="font-semibold">Premium</p>
                 </div>
             @endforelse
         </div>
-    </div>
+    </section>
 
-</div>
+    <!-- Feature Products Section -->
+    <section class="bg-bg-secondary py-section">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between mb-12">
+                <div>
+                    <h2 class="font-display font-bold text-3xl md:text-4xl text-gray-800 mb-2">
+                        Produk Terbaru
+                    </h2>
+                    <p class="text-gray-600">Koleksi kaos distro pilihan</p>
+                </div>
+                <a href="{{ route('guest.catalog') }}"
+                    class="text-accent hover:text-primary font-semibold flex items-center gap-2 transition-fast">
+                    Lihat Semua
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
 
-@push('styles')
-<style>
-    @keyframes marquee {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-    }
-    .animate-marquee {
-        animation: marquee 20s linear infinite;
-    }
-</style>
-@endpush
-@endsection
+            <!-- Product Grid (Zalora-style 4 columns) -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                @forelse($featuredProducts as $product)
+                    <x-product-card :product="$product" />
+                @empty
+                    @for ($i = 0; $i < 8; $i++)
+                        <div class="bg-white border border-border rounded-lg overflow-hidden">
+                            <div class="aspect-[3/4] bg-gray-200 animate-pulse"></div>
+                            <div class="p-4 space-y-2">
+                                <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+                                <div class="h-6 bg-gray-200 rounded animate-pulse w-2/3"></div>
+                            </div>
+                        </div>
+                    @endfor
+                @endforelse
+            </div>
+        </div>
+    </section>
+
+    <!-- Promo Banner Section -->
+    <section class="container mx-auto px-4 py-section">
+        <div class="bg-primary rounded-2xl overflow-hidden">
+            <div class="grid md:grid-cols-2 gap-12 items-center p-12">
+                <div class="text-white space-y-6">
+                    <h2 class="font-display font-bold text-4xl">
+                        Dapatkan Diskon hingga <span class="text-accent">70%</span>
+                    </h2>
+                    <p class="text-gray-300 text-lg">
+                        Khusus untuk member baru. Daftar sekarang dan nikmati penawaran eksklusif!
+                    </p>
+                    <a href="{{ route('register') }}"
+                        class="inline-block bg-accent hover:bg-white hover:text-primary text-white font-semibold px-8 py-4 rounded-lg transition-fast">
+                        Daftar Gratis
+                    </a>
+                </div>
+                <div class="aspect-square rounded-xl overflow-hidden bg-gray-800">
+                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600" alt="Promo"
+                        class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="bg-bg-secondary py-section">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto text-center">
+                <h3 class="font-display font-bold text-3xl text-gray-800 mb-4">
+                    Dapatkan Update Terbaru
+                </h3>
+                <p class="text-gray-600 mb-8">
+                    Subscribe newsletter kami dan dapatkan info produk terbaru serta promo eksklusif
+                </p>
+                <form class="flex gap-4 max-w-md mx-auto">
+                    <input type="email" placeholder="Email kamu..."
+                        class="flex-1 px-6 py-4 rounded-full border border-border focus:outline-none focus:ring-2 focus:ring-accent">
+                    <button type="submit"
+                        class="bg-primary hover:bg-accent text-white font-semibold px-8 py-4 rounded-full transition-fast whitespace-nowrap">
+                        Subscribe
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+</x-layouts.guest>

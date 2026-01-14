@@ -16,28 +16,39 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         if (!$request->user()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthenticated',
-            ], 401);
+            // Jika request API, kembalikan JSON
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Belum login',
+                ], 401);
+            }
+            // Jika request web, redirect ke login
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
         $user = $request->user();
 
-        // Check if user is active
+        // Cek apakah akun aktif
         if (!$user->is_active) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Your account has been deactivated',
-            ], 403);
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akun Anda telah dinonaktifkan',
+                ], 403);
+            }
+            return redirect()->route('login')->with('error', 'Akun Anda telah dinonaktifkan.');
         }
 
-        // Check if user has required role
+        // Cek apakah user memiliki role yang dibutuhkan
         if (!$user->hasAnyRole($roles)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized. Insufficient permissions.',
-            ], 403);
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak memiliki akses. Izin tidak mencukupi.',
+                ], 403);
+            }
+            return redirect()->route('guest.home')->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
         }
 
         return $next($request);

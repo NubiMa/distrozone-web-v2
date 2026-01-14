@@ -62,6 +62,11 @@ class User extends Authenticatable
         return $this->hasMany(ActivityLog::class);
     }
 
+    public function wishlistItems()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
     // Helper methods
     public function isAdmin(): bool
     {

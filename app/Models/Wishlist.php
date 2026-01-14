@@ -10,6 +10,10 @@ class Wishlist extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'wishlists';
+
+    public $incrementing = true;
+
     protected $fillable = [
         'user_id',
         'product_id',

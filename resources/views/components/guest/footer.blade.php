@@ -1,56 +1,66 @@
-{{-- resources/views/components/guest/footer.blade.php --}}
-<footer class="bg-white border-t-4 border-black mt-16">
-    <div class="max-w-7xl mx-auto px-6 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {{-- Brand --}}
-            <div>
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 bg-pink-600 rounded-full border-3 border-black flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                        </svg>
-                    </div>
-                    <span class="text-xl font-bold">DistroZone</span>
-                </div>
-                <p class="text-sm text-gray-600 leading-relaxed">
-                    Fashion retro-futuristik untuk generasi masa depan. Bergaya tanpa batas, harga pas.
+{{-- Brutalist Guest Footer --}}
+<footer class="brutal-border-t bg-asphalt text-white mt-24">
+    <div class="brutal-container">
+        {{-- Main Footer Content --}}
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 py-12 brutal-border-b border-white/20">
+            {{-- Brand Column --}}
+            <div class="md:col-span-2">
+                <h3 class="font-display text-3xl font-bold tracking-tight mb-4">DISTROZONE</h3>
+                <p class="font-mono text-sm text-gray-300 mb-6 max-w-md">
+                    RAW STREETWEAR FOR THE UNDERGROUND.<br/>
+                    NO HYPE. NO BULLSHIT. JUST GEAR.
                 </p>
+                <div class="flex gap-4">
+                    <a href="#" class="brutal-border brutal-border-thick border-white w-10 h-10 flex items-center justify-center hover:bg-white hover:text-asphalt transition-colors">
+                        <span class="sr-only">Instagram</span>
+                        <span class="font-bold">IG</span>
+                    </a>
+                    <a href="#" class="brutal-border brutal-border-thick border-white w-10 h-10 flex items-center justify-center hover:bg-white hover:text-asphalt transition-colors">
+                        <span class="sr-only">Twitter</span>
+                        <span class="font-bold">X</span>
+                    </a>
+                    <a href="#" class="brutal-border brutal-border-thick border-white w-10 h-10 flex items-center justify-center hover:bg-white hover:text-asphalt transition-colors">
+                        <span class="sr-only">TikTok</span>
+                        <span class="font-bold">TT</span>
+                    </a>
+                </div>
             </div>
 
-            {{-- Belanja --}}
+            {{-- Quick Links --}}
             <div>
-                <h3 class="text-sm font-bold mb-4 uppercase">Belanja</h3>
-                <ul class="space-y-2">
-                    <li><a href="{{ route('guest.catalog') }}" class="text-sm text-gray-600 hover:text-pink-600">Semua Produk</a></li>
-                    <li><a href="{{ route('guest.catalog', ['filter' => 'new']) }}" class="text-sm text-gray-600 hover:text-pink-600">New Arrivals</a></li>
-                    <li><a href="{{ route('guest.catalog', ['filter' => 'best']) }}" class="text-sm text-gray-600 hover:text-pink-600">Best Sellers</a></li>
-                </ul>
+                <h4 class="font-display text-sm font-bold uppercase tracking-wide mb-4">NAVIGATE</h4>
+                <nav class="flex flex-col gap-2 font-mono text-sm">
+                    <a href="{{ route('guest.home') }}" class="hover:text-accent transition-colors uppercase">Home</a>
+                    <a href="{{ route('guest.catalog') }}" class="hover:text-accent transition-colors uppercase">Catalog</a>
+                    <a href="{{ route('guest.about') }}" class="hover:text-accent transition-colors uppercase">About</a>
+                </nav>
             </div>
 
-            {{-- Bantuan --}}
+            {{-- Contact Info --}}
             <div>
-                <h3 class="text-sm font-bold mb-4 uppercase">Bantuan</h3>
-                <ul class="space-y-2">
-                    <li><a href="#" class="text-sm text-gray-600 hover:text-pink-600">FAQ</a></li>
-                    <li><a href="#" class="text-sm text-gray-600 hover:text-pink-600">Pengiriman</a></li>
-                    <li><a href="#" class="text-sm text-gray-600 hover:text-pink-600">Retur & Refund</a></li>
-                </ul>
+                <h4 class="font-display text-sm font-bold uppercase tracking-wide mb-4">LOCATION</h4>
+                <address class="font-mono text-sm text-gray-300 not-italic leading-relaxed">
+                    Jln. Raya Pegangsaan Timur<br/>
+                    No.29H, Kelapa Gading<br/>
+                    Jakarta, Indonesia
+                </address>
+                <div class="mt-4 font-mono text-sm">
+                    <p class="text-gray-300">OFFLINE HOURS:</p>
+                    <p class="text-white">10:00 - 20:00</p>
+                    <p class="text-accent">CLOSED MONDAY</p>
+                </div>
             </div>
         </div>
 
         {{-- Bottom Bar --}}
-        <div class="mt-12 pt-8 border-t-2 border-gray-200 flex items-center justify-between">
-            <p class="text-sm text-gray-600">© 2026 DISTROZONE. ALL RIGHTS RESERVED.</p>
-            <div class="flex items-center gap-4">
-                <a href="#" class="w-10 h-10 border-3 border-black rounded-full flex items-center justify-center hover:bg-gray-50 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                    <span class="text-sm font-bold">IG</span>
-                </a>
-                <a href="#" class="w-10 h-10 border-3 border-black rounded-full flex items-center justify-center hover:bg-gray-50 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                    <span class="text-sm font-bold">TT</span>
-                </a>
-                <a href="#" class="w-10 h-10 border-3 border-black rounded-full flex items-center justify-center hover:bg-gray-50 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                    <span class="text-sm font-bold">YT</span>
-                </a>
+        <div class="py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 font-mono text-xs text-gray-400">
+                <p>&copy; {{ date('Y') }} DISTROZONE. ALL RIGHTS RESERVED.</p>
+                <div class="flex gap-6 uppercase">
+                    <a href="#" class="hover:text-accent transition-colors">PRIVACY</a>
+                    <a href="#" class="hover:text-accent transition-colors">TERMS</a>
+                    <a href="#" class="hover:text-accent transition-colors">SHIPPING</a>
+                </div>
             </div>
         </div>
     </div>

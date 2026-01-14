@@ -1,186 +1,193 @@
-{{-- resources/views/guest/product-detail.blade.php --}}
-@extends('layouts.guest')
+<x-layouts.guest>
+    <x-slot:title>{{ $product->name }} - DistroZone</x-slot:title>
 
-@section('title', $product->name . ' - DistroZone')
-
-@section('content')
-<div class="px-6 py-8">
-
-    {{-- Breadcrumb --}}
-    <nav class="flex items-center gap-2 text-sm mb-6">
-        <a href="{{ route('home') }}" class="text-gray-600 hover:text-pink-600">Katalog</a>
-        <span class="text-gray-400">›</span>
-        <a href="{{ route('guest.catalog', ['category' => $product->category->slug]) }}" class="text-gray-600 hover:text-pink-600">
-            {{ $product->category->name }}
-        </a>
-        <span class="text-gray-400">›</span>
-        <span class="font-bold">{{ $product->name }}</span>
-    </nav>
-
-    {{-- Product Container --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-
-        {{-- Product Images --}}
-        <div>
-            <div class="bg-white border-4 border-black rounded-2xl overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] mb-4">
-                {{-- Main Image --}}
-                <div class="relative aspect-square bg-gray-100">
-                    {{-- Badges --}}
-                <div class="absolute top-4 left-4 flex flex-col gap-2 z-10">
-                    @if($product->is_featured)
-                    <span class="px-3 py-1 bg-pink-600 text-white text-xs font-bold border-2 border-white rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                        BEST SELLER
-                    </span>
+    <div class="bg-white min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Breadcrumb -->
+            <nav class="text-sm mb-8">
+                <ol class="flex items-center gap-2 text-text-secondary">
+                    <li><a href="{{ route('guest.home') }}" class="hover:text-accent transition-fast">Home</a></li>
+                    <li>/</li>
+                    <li><a href="{{ route('guest.catalog') }}" class="hover:text-accent transition-fast">Produk</a></li>
+                    @if ($product->category)
+                        <li>/</li>
+                        <li><a href="{{ route('guest.catalog', ['category' => $product->category->slug]) }}"
+                                class="hover:text-accent transition-fast">{{ $product->category->name }}</a></li>
                     @endif
+                    <li>/</li>
+                    <li class="text-gray-800 font-semibold">{{ $product->name }}</li>
+                </ol>
+            </nav>
 
-                    @if($product->created_at->isToday() || $product->created_at->isYesterday())
-                    <span class="px-3 py-1 bg-blue-400 text-white text-xs font-bold border-2 border-white rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                        NEW DROP
-                    </span>
-                    @endif
-                </div>
-                    <img
-                        id="mainImage"
-                        src="{{ $product->primaryImage?->image_path ? asset('storage/' . $product->primaryImage->image_path) : asset('images/placeholder.png') }}"
-                        alt="{{ $product->name }}"
-                        class="w-full h-full object-cover"
-                    >
-                </div>
-            </div>
+            <div class="grid md:grid-cols-2 gap-12 mb-16">
+                <!-- Left: Image Gallery (Zalora style) -->
+                <div>
+                    <!-- Main Image -->
+                    <div class="mb-4 aspect-[3/4] bg-bg-secondary rounded-lg overflow-hidden">
+                        @if ($product->primaryImage)
+                            <img id="mainImage" src="{{ Storage::url($product->primaryImage->image_path) }}"
+                                alt="{{ $product->name }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center">
+                                <svg class="w-24 h-24 text-gray-300" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        @endif
+                    </div>
 
-            {{-- Thumbnail Images --}}
-            @if($product->images->count() > 1)
-            <div class="grid grid-cols-4 gap-3">
-                @foreach($product->images as $image)
-                <button
-                    onclick="changeImage('{{ asset('storage/' . $image->image_path) }}')"
-                    class="aspect-square bg-white border-3 border-black rounded-xl overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all"
-                >
-                    <img
-                        src="{{ asset('storage/' . $image->image_path) }}"
-                        alt="{{ $image->alt_text }}"
-                        class="w-full h-full object-cover"
-                    >
-                </button>
-                @endforeach
-            </div>
-            @endif
-        </div>
-
-        {{-- Product Info --}}
-        <div>
-            <h1 class="text-4xl font-black mb-2">{{ $product->name }}</h1>
-
-            <div class="flex items-center gap-3 mb-6">
-                <span class="text-3xl font-black text-pink-600">
-                    Rp {{ number_format($product->base_price, 0, ',', '.') }}
-                </span>
-                @if($product->getLowestPrice() != $product->base_price)
-                <span class="text-lg text-gray-400 line-through">
-                    Rp {{ number_format($product->getHighestPrice(), 0, ',', '.') }}
-                </span>
-                @endif
-            </div>
-
-            {{-- Stock Badge --}}
-            @if($product->getTotalStock() > 50)
-            <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-100 border-3 border-black rounded-xl mb-6 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                <div class="w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
-                <span class="text-sm font-bold text-green-800">
-                    Stok Tersedia : {{ $product->getTotalStock() }}
-                </span>
-            </div>
-            @else
-            <div class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 border-3 border-black rounded-xl mb-6 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                <div class="w-2 h-2 bg-yellow-600 rounded-full animate-pulse"></div>
-                <span class="text-sm font-bold text-yellow-800">Stok Terbatas: {{ $product->getTotalStock() }}</span>
-            </div>
-            @endif
-
-            {{-- Size Selector --}}
-            <div class="mb-6">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-sm font-bold uppercase">Pilih Ukuran</h3>
-                    <button class="text-sm font-bold text-pink-600 hover:underline">Panduan Ukuran</button>
-                </div>
-
-                <div class="grid grid-cols-5 gap-3">
-                    @foreach(['S', 'M', 'L', 'XL', 'XXL'] as $size)
-                    @php
-                        $available = $product->variants->where('size', $size)->where('is_available', true)->sum('stock') > 0;
-                    @endphp
-                    <label class="cursor-pointer {{ !$available ? 'opacity-50 cursor-not-allowed' : '' }}">
-                        <input
-                            type="radio"
-                            name="size"
-                            value="{{ $size }}"
-                            class="peer hidden"
-                            {{ !$available ? 'disabled' : '' }}
-                        >
-                        <div class="px-4 py-3 border-3 border-black rounded-xl font-bold text-center peer-checked:bg-pink-600 peer-checked:text-white hover:bg-gray-50 transition shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                            {{ $size }}
+                    <!-- Thumbnail Gallery -->
+                    @if ($product->images->count() > 1)
+                        <div class="grid grid-cols-4 gap-2">
+                            @foreach ($product->images as $image)
+                                <button onclick="changeMainImage('{{ Storage::url($image->image_path) }}')"
+                                    class="aspect-square rounded overflow-hidden border-2 {{ $image->is_primary ? 'border-accent' : 'border-transparent hover:border-gray-300' }} transition-fast">
+                                    <img src="{{ Storage::url($image->image_path) }}" alt="{{ $product->name }}"
+                                        class="w-full h-full object-cover">
+                                </button>
+                            @endforeach
                         </div>
-                    </label>
-                    @endforeach
+                    @endif
                 </div>
-            </div>
 
-            {{-- Guest Login Prompt --}}
-            <div class="bg-gradient-to-r from-pink-500 to-pink-600 border-4 border-black rounded-2xl p-6 mb-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 bg-white border-3 border-black rounded-full flex items-center justify-center">
-                        <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                        </svg>
+                <!-- Right: Product Info -->
+                <div>
+                    <!-- Category Badge -->
+                    @if ($product->category)
+                        <div class="mb-2">
+                            <span
+                                class="inline-block text-xs uppercase tracking-wide text-text-secondary font-semibold">
+                                {{ $product->category->name }}
+                            </span>
+                        </div>
+                    @endif
+
+                    <!-- Product Name -->
+                    <h1 class="font-display font-bold text-3xl md:text-4xl mb-4">
+                        {{ $product->name }}
+                    </h1>
+
+                    <!-- Price -->
+                    <div class="mb-6">
+                        <span class="text-accent font-bold text-3xl">
+                            Rp {{ number_format($product->base_price, 0, ',', '.') }}
+                        </span>
                     </div>
-                    <div class="flex-1">
-                        <h3 class="text-white font-black text-lg mb-1">INGIN MEMBELI PRODUK INI?</h3>
-                        <p class="text-white text-sm">Bergabunglah dengan komunitas DistroZone untuk belanja, simpan wishlist, dan dapatkan promo eksklusif!</p>
+
+                    <!-- Stock Info -->
+                    @if ($product->getTotalStock() > 0)
+                        <p class="text-sm text-green-600 mb-6">
+                            ✓ Stok tersedia ({{ $product->getTotalStock() }} pcs)
+                        </p>
+                    @else
+                        <p class="text-sm text-red-500 mb-6">
+                            ✗ Stok habis
+                        </p>
+                    @endif
+
+                    <hr class="border-border mb-6">
+
+                    <!-- Color Selector -->
+                    @if ($product->variants->pluck('color')->unique()->count() > 1)
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold mb-3 uppercase tracking-wide">Pilih Warna</label>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach ($product->variants->pluck('color')->unique() as $color)
+                                    <button
+                                        class="px-4 py-2 border-2 border-border hover:border-accent text-sm font-semibold rounded transition-fast">
+                                        {{ $color }}
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Size Selector -->
+                    @if ($product->variants->pluck('size')->unique()->count() > 1)
+                        <div class="mb-8">
+                            <label class="block text-sm font-semibold mb-3 uppercase tracking-wide">Pilih Ukuran</label>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach ($product->variants->pluck('size')->unique()->sort() as $size)
+                                    <button
+                                        class="px-5 py-3 border-2 border-border hover:border-accent text-sm font-bold rounded transition-fast">
+                                        {{ $size }}
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Action Buttons -->
+                    <div class="space-y-3 mb-8">
+                        <!-- Login required for guest -->
+                        <a href="{{ route('login') }}"
+                            class="block w-full text-center bg-primary hover:bg-accent text-white font-bold py-4 rounded-lg transition-fast">
+                            Login untuk Membeli
+                        </a>
+                        <a href="{{ route('login') }}"
+                            class="block w-full text-center border-2 border-primary hover:border-accent hover:text-accent text-primary font-bold py-4 rounded-lg transition-fast">
+                            Tambah ke Wishlist
+                        </a>
+                    </div>
+
+                    <hr class="border-border mb-8">
+
+                    <!-- Product Description -->
+                    <div>
+                        <h3 class="font-display font-bold text-lg mb-4">Deskripsi Produk</h3>
+                        <div class="text-gray-600 leading-relaxed space-y-2">
+                            {{ $product->description ?? 'Tidak ada deskripsi tersedia.' }}
+                        </div>
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div class="mt-8 bg-bg-secondary rounded-lg p-6 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span class="text-sm">Garansi 100% Original</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span class="text-sm">Gratis Ongkir Jakarta & Depok</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span class="text-sm">Bisa COD atau Transfer Bank</span>
+                        </div>
                     </div>
                 </div>
-
-                <div class="flex gap-3 mt-4">
-                    <a href="{{ route('login') }}" class="flex-1 px-6 py-3 bg-white text-black text-center font-bold border-3 border-black rounded-xl hover:bg-gray-50 transition shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
-                        Login
-                    </a>
-                    <a href="{{ route('register') }}" class="flex-1 px-6 py-3 bg-black text-white text-center font-bold border-3 border-white rounded-xl hover:bg-gray-800 transition shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]">
-                        Daftar Sekarang
-                    </a>
-                </div>
             </div>
 
-            {{-- Product Description --}}
-            <div class="bg-white border-4 border-black rounded-2xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                <h3 class="text-lg font-black mb-4 uppercase">Deskripsi</h3>
-                <div class="text-gray-700 leading-relaxed mb-4">
-                    {{ $product->description }}
-                </div>
-
-                <ul class="space-y-2">
-                    <li class="flex items-start gap-2">
-                        <span class="text-pink-600 font-bold">•</span>
-                        <span class="text-sm">100% Cotton Premium</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <span class="text-pink-600 font-bold">•</span>
-                        <span class="text-sm">Unisex Cut</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <span class="text-pink-600 font-bold">•</span>
-                        <span class="text-sm">Pre-shrunk fabric</span>
-                    </li>
-                </ul>
-            </div>
+            <!-- Related Products -->
+            @if (isset($relatedProducts) && $relatedProducts->count() > 0)
+                <section class="mt-16">
+                    <h2 class="font-display font-bold text-2xl mb-8">Produk Serupa</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        @foreach ($relatedProducts as $related)
+                            <x-product-card :product="$related" />
+                        @endforeach
+                    </div>
+                </section>
+            @endif
         </div>
     </div>
 
-</div>
-
-@push('scripts')
-<script>
-function changeImage(src) {
-    document.getElementById('mainImage').src = src;
-}
-</script>
-@endpush
-@endsection
+    @push('scripts')
+        <script>
+            function changeMainImage(imageUrl) {
+                document.getElementById('mainImage').src = imageUrl;
+            }
+        </script>
+    @endpush
+</x-layouts.guest>
